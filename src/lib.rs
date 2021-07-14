@@ -4,13 +4,13 @@
 extern crate test;
 
 use std::mem;
-use colored::*;
-use rand::Rng;
 
-// A least-significant-first radix sort implementation for 32-bit signed integers.
-// The data is handled in 8-bit pieces and sorted using a counting sort algorithm.
-// Sorts the vector in ascending order.
-fn radix_sort(vec: &Vec<i32>) -> Vec<i32> {
+/// A least-significant-first radix sort implementation for 32-bit signed integers.
+/// The data is handled in 8-bit pieces and sorted using a counting sort algorithm.
+/// Sorts the vector in ascending order.
+///
+/// * `vec` - The vector to be sorted.
+pub fn radix_sort(vec: &Vec<i32>) -> Vec<i32> {
     let n = vec.len();
     if n <= 1 { return vec.clone(); } // If the length of the vector is 1 or less, it is already sorted
     // The vectors a and b are temporary vectors where the partially sorted sets
@@ -54,28 +54,41 @@ fn radix_sort(vec: &Vec<i32>) -> Vec<i32> {
     a
 }
 
-fn main() {
-    println!("{}", "This program sorts vectors of 32-bit integers using a radix sort algorithm".purple().bold());
-    println!("{}", "Erika Marttinen 2021".blue().blink().italic());
+// fn main() {
+//     use colored::*;
+//     println!("{}", "This program sorts vectors of 32-bit integers using a radix sort algorithm".purple().bold());
+//     println!("{}", "Erika Marttinen 2021".blue().blink().italic());
+// }
+
+// A helper function to create large vectors with randomly generated numbers.
+// E.g. generate_vector(6) returns a vector consisting of one million integers.
+pub fn generate_vector(zeroes: u32) -> Vec<i32> {
+    if zeroes <= 0 { return vec![]; }
+
+    use rand::Rng;
+    let mut rng = rand::thread_rng();
+
+    // Create 10^{zeroes} vectors containing random numbers.
+    let end = i32::pow(10, zeroes);
+    (0..end).map(|_| rng.gen::<i32>()).collect()
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use test::Bencher;
 
     #[test]
     fn static_test() {
         // Hard coded test vectors for simple cases.
-        let htv = [
+        let htv = vec![
             vec![],
             vec![2],
             vec![2, 3, 1, 5, 4],
             vec![-10, 8, 0, -11],
         ];
         // Test radix sort for each vector one by one.
-        for i in 0..4 {
-            let mut current = htv[i].clone();
+        for v in htv {
+            let mut current = v;
             let radix_res = radix_sort(&current);
             current.sort();
             assert_eq!(radix_res, current);
@@ -85,24 +98,18 @@ mod tests {
     #[test]
     fn dynamic_test() {
         // Randomly generated larger vectors.
-        let mut rng = rand::thread_rng();
         // Test vectors consisting of 100, 10 000 and 1000 000 random integers.
-        let v100: Vec<i32> = (0..100).map(|_| rng.gen::<i32>()).collect();
-        let v10k: Vec<i32> = (0..10000).map(|_| rng.gen::<i32>()).collect();
-        let v1m: Vec<i32> = (0..1000000).map(|_| rng.gen::<i32>()).collect();
-        let rv = [v100, v10k, v1m];
+        let rv = vec![
+            generate_vector(2),
+            generate_vector(4),
+            generate_vector(6),
+            ];
         // Test radix sort for each vector one by one.
-        for i in 0..3 {
-            let mut current = rv[i].clone();
+        for v in rv {
+            let mut current = v;
             let radix_res = radix_sort(&current);
             current.sort();
             assert_eq!(radix_res, current);
         }
-    }
-
-    #[bench]
-    fn test_bench(b: &mut Bencher) {
-        // This will be expanded later
-        b.iter(|| radix_sort(&vec![0, 4, 1, 6]));
     }
 }
