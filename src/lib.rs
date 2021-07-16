@@ -54,12 +54,6 @@ pub fn radix_sort(vec: &Vec<i32>) -> Vec<i32> {
     a
 }
 
-// fn main() {
-//     use colored::*;
-//     println!("{}", "This program sorts vectors of 32-bit integers using a radix sort algorithm".purple().bold());
-//     println!("{}", "Erika Marttinen 2021".blue().blink().italic());
-// }
-
 // A helper function to create large vectors with randomly generated numbers.
 // E.g. generate_vector(6) returns a vector consisting of one million integers.
 pub fn generate_vector(zeroes: u32) -> Vec<i32> {
@@ -71,45 +65,4 @@ pub fn generate_vector(zeroes: u32) -> Vec<i32> {
     // Create 10^{zeroes} vectors containing random numbers.
     let end = i32::pow(10, zeroes);
     (0..end).map(|_| rng.gen::<i32>()).collect()
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn static_test() {
-        // Hard coded test vectors for simple cases.
-        let htv = vec![
-            vec![],
-            vec![2],
-            vec![2, 3, 1, 5, 4],
-            vec![-10, 8, 0, -11],
-        ];
-        // Test radix sort for each vector one by one.
-        for v in htv {
-            let mut current = v;
-            let radix_res = radix_sort(&current);
-            current.sort();
-            assert_eq!(radix_res, current);
-        }
-    }
-
-    #[test]
-    fn dynamic_test() {
-        // Randomly generated larger vectors.
-        // Test vectors consisting of 100, 10 000 and 1000 000 random integers.
-        let rv = vec![
-            generate_vector(2),
-            generate_vector(4),
-            generate_vector(6),
-            ];
-        // Test radix sort for each vector one by one.
-        for v in rv {
-            let mut current = v;
-            let radix_res = radix_sort(&current);
-            current.sort();
-            assert_eq!(radix_res, current);
-        }
-    }
 }
